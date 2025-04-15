@@ -3,23 +3,9 @@
 Decentralized Federated File Hosting Platform
 ## Overview
 
-0din is an early alpha-stage, decentralized, federated file hosting platform that aims to provide a scalable and user-friendly solution for sharing and accessing files across a distributed network. By combining the strengths of decentralization and federation, 0din creates a dynamic, resilient ecosystem for file-sharing.
-
-For further details and guides, check out our wiki [here](https://0din.dns-cloud.net/x/guides.html).
+0din is a decentralized, federated file hosting platform that aims to provide a scalable and user-friendly solution for sharing and accessing files across a distributed network. By combining the strengths of decentralization and federation, 0din creates a dynamic, resilient ecosystem for file-sharing.
 
 ## Installation
-
-You have 2 options for installation, either manually or with Docker, Docker is the recommended method.
-
-### Installing using docker
-
-Just use this image, it is currently the only official Docker image for 0din, everything else is not official.
-
-```bash
-docker pull pastagringo/0din-docker
-```
-
-### Manual Installation
 
 1. **Clone the repository**:
    ```bash
@@ -114,31 +100,4 @@ Network Expansion: As more users establish 0din nodes, the network grows, increa
 9. Community-Driven Expansion
 - 0din: Leverages the contributions of data hoarders who bring substantial storage capacities to the network, creating a massive, distributed archive of information.
 - BitTorrent/IPFS: Expansion often depends on broader adoption and community support, with no specific focus on data hoarders or large-scale individual contributions.
-
-## Roadmap
-### Minor Features
-
-Wiki and Usage Documentation: Comprehensive wiki and usage documents to assist users in setting up and utilizing 0din effectively.
-
-Improved Categorization: More categories, better matching
-
-more controls on the admin panel: like triggering indexing for example, and progress bars for currently running tasks
-
-### Major Features
-
-Proxying Nodes: Support for proxying one node over another, which is useful for nodes that cannot directly port forward, allowing for greater flexibility in network setup.
-
-File Previews: previewing some files in the search page
-
-## Status
-
-0din is currently in early alpha. While the core features are functional, the project is still under development and is not yet ready for production use. We welcome feedback and contributions as we work towards a stable release.
-
-## How to Reach Us
-
-We welcome feedback and contributions! You can connect with us on the following channels:
-
-- **Discord**: You can [join the 0din Discord server](https://discord.gg/WCR7D8xK2s).
-
-- **GitHub Discussions**: Join the conversation, ask questions, and share ideas in our [GitHub Discussions](https://github.com/4rtemis-4rrow/0din/discussions).
 
