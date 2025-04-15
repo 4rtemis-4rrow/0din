@@ -1,0 +1,387 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard - 0din{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-6xl space-y-8">
+    <div>
+        <h2 class="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Manage your file indexing system settings and operations</p>
+    </div>
+    
+    <div class="border-b border-gray-200 dark:border-gray-800">
+        <nav class="flex -mb-px space-x-8" aria-label="Tabs">
+            <button class="tab-button px-1 py-4 text-sm font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400" data-tab="indexer">
+                Indexer
+            </button>
+            <button class="tab-button px-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-700" data-tab="settings">
+                Settings
+            </button>
+            <button class="tab-button px-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-700" data-tab="nodes">
+                Nodes
+            </button>
+        </nav>
+    </div>
+    
+    <!-- Indexer Tab -->
+    <div class="tab-content" id="indexer-tab">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-lg font-medium">File Indexer</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Index files in a specific directory to make them searchable</p>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 p-6 space-y-4">
+                <div id="indexer-status" class="hidden p-4 rounded-md"></div>
+                
+                <form id="indexer-form" class="space-y-4">
+                    <div class="flex flex-col gap-4 sm:flex-row">
+                        <input type="text" id="index-path" placeholder="Enter directory path to index" required
+                               class="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" id="index-button"
+                                class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Start Indexing
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Tab -->
+    <div class="tab-content hidden" id="settings-tab">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-lg font-medium">Node Settings</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Configure your node settings and parameters</p>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 p-6 space-y-6">
+                <div id="settings-status" class="hidden p-4 rounded-md"></div>
+                
+                <form id="settings-form" class="space-y-6">
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="space-y-2">
+                            <label for="node-id" class="text-sm font-medium text-gray-700 dark:text-gray-300">Node ID</label>
+                            <input type="text" id="node-id" name="NODE_ID" 
+                                   class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="node-port" class="text-sm font-medium text-gray-700 dark:text-gray-300">Node Port</label>
+                            <input type="number" id="node-port" name="NODE_PORT"
+                                   class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="shared-directory" class="text-sm font-medium text-gray-700 dark:text-gray-300">Shared Directory</label>
+                        <input type="text" id="shared-directory" name="SHARED_DIRECTORY"
+                               class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="known-nodes" class="text-sm font-medium text-gray-700 dark:text-gray-300">Known Nodes</label>
+                        <textarea id="known-nodes" name="known_nodes" rows="4"
+                                  class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Enter one node ID per line</p>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="submit" id="save-settings-button"
+                                class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nodes Tab -->
+    <div class="tab-content hidden" id="nodes-tab">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div class="p-6 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-medium">Connected Nodes</h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">View and manage all nodes in the network</p>
+                </div>
+                <button id="refresh-nodes-button"
+                        class="inline-flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <path d="M21 2v6h-6"></path>
+                        <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                        <path d="M3 22v-6h6"></path>
+                        <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 p-6">
+                <div id="nodes-list" class="space-y-4">
+                    <div class="text-center py-8">Loading nodes...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-end gap-4">
+        <a href="{{ url_for('home') }}" 
+           class="inline-flex items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Back to Home
+        </a>
+        <form action="{{ url_for('login') }}" method="GET">
+            <button type="submit" 
+                    class="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Logout
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            
+            // Update button styles
+            tabButtons.forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+                btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300', 'dark:hover:border-gray-700');
+            });
+            
+            button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300', 'dark:hover:border-gray-700');
+            button.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+            
+            // Show the selected tab content
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // Load data for the selected tab
+            if (tabName === 'settings') {
+                loadSettings();
+            } else if (tabName === 'nodes') {
+                loadNodes();
+            }
+        });
+    });
+    
+    // Indexer form submission
+    const indexerForm = document.getElementById('indexer-form');
+    const indexerStatus = document.getElementById('indexer-status');
+    const indexButton = document.getElementById('index-button');
+    const originalIndexButtonText = indexButton.innerHTML;
+    
+    indexerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const path = document.getElementById('index-path').value;
+        
+        indexButton.disabled = true;
+        indexButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin mr-2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+            Indexing...
+        `;
+        
+        try {
+            const response = await fetch('/indexer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ path }),
+            });
+            
+            const data = await response.text();
+            
+            indexerStatus.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400', 'bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+            
+            if (response.ok) {
+                indexerStatus.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+                indexerStatus.textContent = 'Indexing completed successfully!';
+            } else {
+                indexerStatus.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+                indexerStatus.textContent = data || 'Failed to run indexer';
+            }
+        } catch (error) {
+            indexerStatus.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+            indexerStatus.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+            indexerStatus.textContent = 'An error occurred while communicating with the server';
+        } finally {
+            indexButton.disabled = false;
+            indexButton.innerHTML = originalIndexButtonText;
+            indexerStatus.classList.remove('hidden');
+        }
+    });
+    
+    // Settings form
+    const settingsForm = document.getElementById('settings-form');
+    const settingsStatus = document.getElementById('settings-status');
+    const saveSettingsButton = document.getElementById('save-settings-button');
+    const originalSaveButtonText = saveSettingsButton.innerHTML;
+    
+    async function loadSettings() {
+        try {
+            // This is a mock implementation since the backend doesn't provide a direct settings endpoint
+            // In a real implementation, you would create this endpoint in the Flask backend
+            const settings = {
+                NODE_ID: 'node1',
+                NODE_PORT: 5000,
+                SHARED_DIRECTORY: '/path/to/shared/directory',
+                known_nodes: ['node2', 'node3']
+            };
+            
+            document.getElementById('node-id').value = settings.NODE_ID;
+            document.getElementById('node-port').value = settings.NODE_PORT;
+            document.getElementById('shared-directory').value = settings.SHARED_DIRECTORY;
+            document.getElementById('known-nodes').value = settings.known_nodes.join('\n');
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }
+    
+    settingsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        saveSettingsButton.disabled = true;
+        saveSettingsButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin mr-2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+            Saving...
+        `;
+        
+        try {
+            const formData = new FormData(settingsForm);
+            const settings = {
+                NODE_ID: formData.get('NODE_ID'),
+                NODE_PORT: parseInt(formData.get('NODE_PORT')),
+                SHARED_DIRECTORY: formData.get('SHARED_DIRECTORY'),
+                known_nodes: formData.get('known_nodes').split('\n').filter(Boolean)
+            };
+            
+            // This is a mock implementation
+            // In a real implementation, you would send these settings to the Flask backend
+            
+            settingsStatus.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400', 'bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+            
+            settingsStatus.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+            settingsStatus.textContent = 'Settings saved successfully!';
+        } catch (error) {
+            settingsStatus.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'dark:bg-green-900/30', 'dark:text-green-400');
+            settingsStatus.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/30', 'dark:text-red-400');
+            settingsStatus.textContent = 'An error occurred while saving settings';
+        } finally {
+            saveSettingsButton.disabled = false;
+            saveSettingsButton.innerHTML = originalSaveButtonText;
+            settingsStatus.classList.remove('hidden');
+        }
+    });
+    
+    // Nodes list
+    const nodesList = document.getElementById('nodes-list');
+    const refreshNodesButton = document.getElementById('refresh-nodes-button');
+    const originalRefreshButtonText = refreshNodesButton.innerHTML;
+    
+    async function loadNodes() {
+        try {
+            refreshNodesButton.disabled = true;
+            refreshNodesButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin mr-2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                </svg>
+                Refreshing...
+            `;
+            
+            const response = await fetch('/json/nodes');
+            const nodeIds = await response.json();
+            
+            if (nodeIds.length === 0) {
+                nodesList.innerHTML = `
+                    <div class="text-center py-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width  width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-400 dark:text-gray-600">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                        </svg>
+                        <h3 class="mt-4 text-lg font-semibold">No nodes found</h3>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            Add nodes to your network to enable distributed search.
+                        </p>
+                    </div>
+                `;
+            } else {
+                let nodesHtml = '';
+                
+                // For each node ID, check if it's online (mock implementation)
+                for (const nodeId of nodeIds) {
+                    const isOnline = Math.random() > 0.3; // 70% chance of being online
+                    const lastSeen = new Date().toLocaleString();
+                    
+                    nodesHtml += `
+                        <div class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+                            <div class="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 dark:text-gray-400">
+                                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                                </svg>
+                                <div>
+                                    <p class="font-medium">${nodeId}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Last seen: ${lastSeen}</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                isOnline 
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                            }">
+                                ${isOnline ? 'online' : 'offline'}
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                nodesList.innerHTML = nodesHtml;
+            }
+        } catch (error) {
+            console.error('Error loading nodes:', error);
+            nodesList.innerHTML = `
+                <div class="rounded-lg border border-red-200 dark:border-red-800 bg-red-100 dark:bg-red-900/30 p-4 text-red-700 dark:text-red-400">
+                    Failed to load nodes. Please try again.
+                </div>
+            `;
+        } finally {
+            refreshNodesButton.disabled = false;
+            refreshNodesButton.innerHTML = originalRefreshButtonText;
+        }
+    }
+    
+    refreshNodesButton.addEventListener('click', loadNodes);
+    
+    // Load settings and nodes on page load
+    loadSettings();
+    loadNodes();
+});
+</script>
+{% endblock %}

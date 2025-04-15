@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}Setup - 0din{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+    <div class="w-full max-w-md rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="0din Logo" class="h-auto w-[5vw] max-w-[32px] min-w-[20px]">
+                <h2 class="text-xl font-bold">Initial Setup</h2>
+            </div>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Create your admin account to get started</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-3 rounded-md {% if category == 'error' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400{% else %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('setup') }}" method="POST" class="space-y-4">
+            <div class="space-y-2">
+                <label for="username" class="text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                <input type="text" id="username" name="username" required
+                       class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="space-y-2">
+                <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                <input type="password" id="password" name="password" required
+                       class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="space-y-2">
+                <label for="password_confirmation" class="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required
+                       class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="submit" 
+                    class="w-full inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Create Account
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

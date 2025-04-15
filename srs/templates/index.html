@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+
+{% block title %}0din - Home{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl space-y-8">
+    <div class="text-center">
+        <h2 class="text-3xl font-bold tracking-tight">0din File Search System</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Search for files across all connected nodes</p>
+    </div>
+    
+    <form action="{{ url_for('global_search_route') }}" method="POST" class="space-y-4">
+        <div class="flex flex-col gap-4 sm:flex-row">
+            <!-- Example of search suggestions dropdown -->
+            <div class="relative">
+              <input type="text" name="query" id="search-input" placeholder="Search for files..." 
+                     class="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                     required>
+              <div id="search-suggestions" class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg hidden">
+                <ul class="py-1">
+                  <li class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">document.pdf</li>
+                  <li class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">document_v2.pdf</li>
+                  <li class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">documentation.docx</li>
+                </ul>
+              </div>
+            </div>
+            <select name="category" 
+                    class="w-full sm:w-[180px] px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">All Categories</option>
+                <option value="document">Documents</option>
+                <option value="image">Images</option>
+                <option value="video">Videos</option>
+                <option value="audio">Audio</option>
+                <option value="archive">Archives</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <button type="submit" 
+                class="w-full flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            Search
+        </button>
+    </form>
+    
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+            <div class="flex justify-between items-start">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Files</h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 dark:text-gray-400">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <circle cx="10" cy="13" r="2"></circle>
+                    <path d="m20 17-1.09-1.09a2 2 0 0 0-2.82 0L10 22"></path>
+                </svg>
+            </div>
+            <div class="mt-2 text-2xl font-bold" id="total-files">Loading...</div>
+        </div>
+        
+        <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+            <div class="flex justify-between items-start">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Size</h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 dark:text-gray-400">
+                    <path d="M2 20h20"></path>
+                    <path d="M5 20V8.2a1 1 0 0 1 .4-.8l4.2-3.4a1 1 0 0 1 1.2 0l4.2 3.4a1 1 0 0 1 .4.8V20"></path>
+                    <path d="M10 20v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4"></path>
+                </svg>
+            </div>
+            <div class="mt-2 text-2xl font-bold" id="total-size">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch total file size
+    fetch('/total_file_size')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-size').textContent = formatBytes(data.total_file_size);
+        })
+        .catch(error => {
+            console.error('Error fetching file size:', error);
+            document.getElementById('total-size').textContent = 'Error';
+        });
+    
+    // Fetch total files across all nodes using the new endpoint
+    fetch('/total_files_all')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-files').textContent = data.total_files.toLocaleString();
+        })
+        .catch(error => {
+            console.error('Error fetching total files:', error);
+            
+            // Fallback to local files count if the all-nodes endpoint fails
+            fetch('/total_files')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-files').textContent = data.total_files.toLocaleString() + ' (local)';
+                })
+                .catch(error => {
+                    console.error('Error fetching local file count:', error);
+                    document.getElementById('total-files').textContent = 'Error';
+                });
+        });
+});
+
+function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+</script>
+{% endblock %}
