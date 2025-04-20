@@ -37,7 +37,7 @@ Decentralized Federated File Hosting Platform
 
 5. **Run the application:**:
    ```bash
-   python 0din.py
+   python srs/0din.py
 ## Key Features
 
 Decentralized Hosting: Operates on a distributed network of nodes, each contributing to the overall system, ensuring robustness and redundancy.
