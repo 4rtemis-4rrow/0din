@@ -183,20 +183,12 @@ def admin():
 def shutdown():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-    return 'Server shutting down...'
+    os._exit(0)
 
 @app.route('/restart', methods=['POST'])
 def restart():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
     os.execv(__file__, ['python'] + [__file__])
     return 'Server restarting...'
 
